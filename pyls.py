@@ -15,13 +15,15 @@ class UnixCommand:
 
     # Output Generated Commands
     # ls - lists out the top level directories and files, and it ignores those files which starts with '.'
-    # A - lists out the top level directories and files, and it ignores those files which starts with '.'
+    # A - lists out the top level directories and files including files which starts with '.'
+    # l - This prints details information of the files and directories like permission, file or directory size, date,
+    # name vertically
     def output_generated_command(self, a_flag: bool, l_flag: bool) -> str:
         """
         Generate Output for commands like ls, A, l
         :param a_flag: boolean type if false then any files starts with '.', will be ignored else will be included
         :param l_flag: type: boolean type if false then only file name will be going to shown else every details like
-        permission, file or directory size, date, name will be shown
+        permission, file or directory size, date, name vertically will be shown
         :return: type: string type as a final output
         """
         if l_flag and a_flag:  # pyls -l -A
@@ -51,7 +53,7 @@ parser.add_argument('-A', action='store_true',
                     help='Provide -A to get all the files and directories including files starting with "."')
 parser.add_argument('-l', action='store_true',
                     help='Provide -l to get all the files and directories information like permission, '
-                         'file or directory size, date, name.')
+                         'file or directory size, date, name vertically.')
 args = parser.parse_args()  # Creating the argument object to parse argument
 
 # Parsing Arguments
