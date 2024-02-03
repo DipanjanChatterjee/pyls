@@ -14,7 +14,7 @@ class UnixCommand:
 
     # Output Generated Commands
     # ls - lists out the top level directories and files, and it ignores those files which starts with '.'
-    def ls(self) -> str:
+    def command_ls(self) -> str:
         return ' '.join([items.get('name') for items in self.structure if not items.get('name').startswith('.')])
 
 
@@ -42,4 +42,4 @@ if path:
 else:
     command_object.directory_parser('interpreter')
 
-print(command_object.ls())
+print(command_object.command_ls())
