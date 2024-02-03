@@ -52,6 +52,10 @@ class UnixCommand:
         """
         self.structure = reversed(self.structure)
 
+    # t - sorted the order of the file or directory based on time (oldest first)
+    def command_t(self):
+        self.structure = sorted(self.structure, key=lambda item: datetime.fromtimestamp(item.get('time_modified')))
+
 
 # Argument Parser Inputs
 parser = argparse.ArgumentParser(description='Unix Command Executor For Directory Parser')
@@ -64,7 +68,9 @@ parser.add_argument('-A', action='store_true',
 parser.add_argument('-l', action='store_true',
                     help='Provide -l to get all the files and directories information like permission, '
                          'file or directory size, date, name vertically.')
-parser.add_argument('-r', action='store_true', help='Provide -r to get all the files and directories in reverse order.')
+parser.add_argument('-r', action='store_true', help='Provide -r to get the files and directories in reverse order.')
+parser.add_argument('-t', action='store_true',
+                    help='Provide -t to get the files and directories in sorted order based on time (oldest first).')
 args = parser.parse_args()  # Creating the argument object to parse argument
 
 # Parsing Arguments
@@ -73,6 +79,7 @@ path = args.path
 all_file_flag = args.A
 list_info_flag = args.l
 reverse_flag = args.r
+time_sorting_flag = args.t
 
 # Reading Structures
 file_object = open(structure_path, 'r')
@@ -86,6 +93,8 @@ if path:
 else:
     command_object.directory_parser('interpreter')
 
+if time_sorting_flag:
+    command_object.command_t()
 if reverse_flag:
     command_object.command_r()
 
