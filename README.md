@@ -4,3 +4,6 @@
 1. **`pyls`**: This lists out the top level (in the directory interpreter) directories and files, and it ignores the file which starts with '.'. Example:
 
     ![pyls](images/pyls.png "pyls")
+2. **`pyls -A`**: This prints all the files and directories (including files starting with '.'). Example:
+    
+    ![pyls -A](images/pyls_-A.png "pyls -A")
