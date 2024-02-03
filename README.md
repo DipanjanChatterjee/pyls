@@ -10,9 +10,16 @@
 3. **`pyls -l`**: This prints details information of the files and directories like permission, file or directory size, date, name vertically. Example:
 
    ![pyls -l](images/pyls_-l.png "pyls -l")
-4. **`pyls -l -r`**: This reverses the order of the files or directory. Example:
+4. **`pyls -l -r`**: This reverses the order of the files and directory. Example:
 
    ![pyls -l -r](images/pyls_-l_-r.png "pyls -l -r")
-5. **`pyls -l -t`**: This sorted order of the files or directory based on time (oldest first). Example:
+5. **`pyls -l -t`**: This sorted order of the files and directory based on time (oldest first). Example:
 
    ![pyls -l -t](images/pyls_-l_-t.png "pyls -l -t")
+6. **`pyls -l --filter=<option>`**: This filtered out file or directories based on provided options(file, dir). `pyls -l --filter=file` filtered out only file, `pyls -l --filter=dir` filtered out only dir, but an error message will be displayed if neither _file_ nor _dir_ is specified. Example:
+   
+   |         Command         |                                         Images                                          |
+   |:-----------------------:|:---------------------------------------------------------------------------------------:|
+   |  `pyls -l --filter=dir`   |     ![pyls -l --filter=dir](images/pyls_-l_-filter=dir.png "pyls -l --filter=dir")      |
+   |  `pyls -l --filter=file`  |    ![pyls -l --filter=file](images/pyls_-l_-filter=file.png "pyls -l --filter=file")    |
+   | `pyls -l --filter=folder` | ![pyls -l --filter=folder](images/pyls_-l_-filter=folder.png "pyls -l --filter=folder") |
