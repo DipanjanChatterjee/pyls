@@ -16,7 +16,7 @@ class UnixCommand:
     # Output Generated Commands
     # ls - lists out the top level directories and files, and it ignores those files which starts with '.'
     # A - lists out the top level directories and files including files which starts with '.'
-    # l - This prints details information of the files and directories like permission, file or directory size, date,
+    # l - get details information of the files and directories like permission, file or directory size, date,
     # name vertically
     def output_generated_command(self, a_flag: bool, l_flag: bool) -> str:
         """
@@ -42,6 +42,16 @@ class UnixCommand:
         else:  # pyls
             return ' '.join([items.get('name') for items in self.structure if not items.get('name').startswith('.')])
 
+    # Transformation Commands
+
+    # r - reverse the order of the file or directory
+    def command_r(self):
+        """
+        Reverse the order of the file or directory and update the existing the structure.
+        :return: None
+        """
+        self.structure = reversed(self.structure)
+
 
 # Argument Parser Inputs
 parser = argparse.ArgumentParser(description='Unix Command Executor For Directory Parser')
@@ -54,6 +64,7 @@ parser.add_argument('-A', action='store_true',
 parser.add_argument('-l', action='store_true',
                     help='Provide -l to get all the files and directories information like permission, '
                          'file or directory size, date, name vertically.')
+parser.add_argument('-r', action='store_true', help='Provide -r to get all the files and directories in reverse order.')
 args = parser.parse_args()  # Creating the argument object to parse argument
 
 # Parsing Arguments
@@ -61,6 +72,7 @@ structure_path = args.structure
 path = args.path
 all_file_flag = args.A
 list_info_flag = args.l
+reverse_flag = args.r
 
 # Reading Structures
 file_object = open(structure_path, 'r')
@@ -73,5 +85,8 @@ if path:
     print()
 else:
     command_object.directory_parser('interpreter')
+
+if reverse_flag:
+    command_object.command_r()
 
 print(command_object.output_generated_command(all_file_flag, list_info_flag))
