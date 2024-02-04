@@ -33,3 +33,7 @@
 8. **`pyls -l -h`**: This converted size of the file or directory to human-readable size. Example:
 
    ![pyls -l -h](images/pyls_-l_-h.png "pyls -l -h")
+9. **`pyls --help`**: This showed helpful message, usage, description, lists all available commands and example. Example:
+
+   ![pyls --help](images/pyls_-help1.png "pyls --help")
+   ![pyls --help](images/pyls_-help2.png "pyls --help")
