@@ -16,23 +16,25 @@ class UnixCommand:
     # A - lists out the top level directories and files including files which starts with '.'
     # l - get details information of the files and directories like permission, file or directory size, date,
     # name vertically
-    def output_generated_command(self, a_flag: bool, l_flag: bool) -> str:
+    def output_generated_command(self, a_flag: bool, l_flag: bool, h_flag: bool) -> str:
         """
         Generate Output for commands like ls, A, l
         :param a_flag: Boolean type if false then any files starts with '.', will be ignored else will be included
         :param l_flag: type: Boolean type if false then only file name will be going to shown else every details like
         permission, file or directory size, date, name vertically will be shown
+        :param h_flag: Boolean type if true then size of the file will be converted into human-readable size else size
+        will remain the same.
         :return: type: string type as a final output
         """
         if l_flag and a_flag:  # pyls -l -A
             return '\n'.join([
-                f'{items.get("permissions")} {items.get("size")} '
+                f'{items.get("permissions")} {self.size_converter(items.get("size")) if h_flag else items.get("size")} '
                 f'{datetime.fromtimestamp(items.get("time_modified")).strftime("%b %d %H:%M")} {items.get("name")}'
                 for items in self.structure
             ])
         elif l_flag and not a_flag:  # pyls -l
             return '\n'.join([
-                f'{items.get("permissions")} {items.get("size")} '
+                f'{items.get("permissions")} {self.size_converter(items.get("size")) if h_flag else items.get("size")} '
                 f'{datetime.fromtimestamp(items.get("time_modified")).strftime("%b %d %H:%M")} {items.get("name")}'
                 for items in self.structure if len(re.findall('^\\.\\w+', items.get('name'))) <= 0])
         elif not l_flag and a_flag:  # pyls -A
@@ -77,6 +79,19 @@ class UnixCommand:
         else:
             raise Exception(f"'{filter_name}' is not a valid filter criteria. Available filters are 'dir' and 'file'")
 
+    # Human Readable Size Converter - Convert file or directory size into Human Readable Size
+    def size_converter(self, size: Union[int, float], units=None) -> str:
+        """
+        Convert file or directory size into human-readable size
+        :param size: Float or Integer type; file or directory size
+        :param units: None type, Optional; units holds size units
+        :return: String type; returns converted human-readable size
+        """
+        if units is None:
+            units = ['', 'K', 'M', 'G', 'T', 'P', 'E']
+        return re.sub('\\.\\d+$', '', f'{size:.1f}{units[0]}') if size < 1024 else (self.size_converter
+                                                                                    (size / 1024, units[1:]))
+
 
 # <path> - Search path item in directory info and find all subdirectories, files.
 def handle_directory_path(directory_info: Union[dict, list], path_list: list, route_list=None) -> list:
@@ -120,7 +135,7 @@ def handle_directory_path(directory_info: Union[dict, list], path_list: list, ro
 
 
 # Argument Parser Inputs
-parser = argparse.ArgumentParser(description='Unix Command Executor For Directory Parser')
+parser = argparse.ArgumentParser(description='Unix Command Executor For Directory Parser', add_help=False)
 parser.add_argument('--structure', type=str, default='Structure/Structure.json',
                     help='Provide Structure file location, Default Structure.json')
 parser.add_argument('path', nargs='?', type=str, default='',
@@ -135,6 +150,7 @@ parser.add_argument('-t', action='store_true',
                     help='Provide -t to get the files and directories in sorted order based on time (oldest first).')
 parser.add_argument('--filter', type=str, default='',
                     help='Provide --filter to filter out files or directories, available options are file and dir.')
+parser.add_argument('-h', action='store_true', help='Provide -h to get human readable size of files and directories.')
 args = parser.parse_args()  # Creating the argument object to parse argument
 
 # Parsing Arguments and Defined Variables
@@ -145,6 +161,7 @@ list_info_flag = args.l
 reverse_flag = args.r
 time_sorting_flag = args.t
 filter_type = args.filter
+human_size_flag = args.h
 is_path_found = False
 
 # Reading Structures
@@ -176,4 +193,4 @@ if time_sorting_flag:
     command_object.command_t()
 if reverse_flag:
     command_object.command_r()
-print(command_object.output_generated_command(all_file_flag, list_info_flag))
+print(command_object.output_generated_command(all_file_flag, list_info_flag, human_size_flag))
