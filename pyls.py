@@ -135,26 +135,50 @@ def handle_directory_path(directory_info: Union[dict, list], path_list: list, ro
 
 
 # Argument Parser Inputs
-parser = argparse.ArgumentParser(description='Unix Command Executor For Directory Parser', add_help=False)
+parser = argparse.ArgumentParser(
+    prog='PYLS',
+    usage='%(prog)s retrieve and display the top-level directories and files from a JSON file, excluding those whose'
+          ' names start with "."',
+    description='This is equipped to execute a variety of commands, including Unix commands such as ls, '
+                'ls -A, ls -l, and more alongside some custom commands.\nExplore the extensive range of functionalities'
+                ' by referring to the provided arguments.',
+    epilog='''Example:
+    python pyls.py | pyls 
+    python pyls.py --structure=Structure/Structure.json  | pyls --structure=Structure/Structure.json
+    python pyls.py --root=interpreter | pyls --root=interpreter
+    python pyls.py  parser | pyls parser
+    python pyls.py  -A | pyls -A
+    python pyls.py  -l | pyls -l
+    python pyls.py  -l -r | pyls -l -r
+    python pyls.py  -l -t | pyls -l -t
+    python pyls.py  -l --filter=file | python pyls.py  -l --filter=dir | pyls -l --filter=file | pyls  -l --filter=dir
+    python pyls.py  -l -h | pyls -l -h
+    python pyls.py  --help | pyls --help
+    ''',
+    formatter_class=argparse.RawDescriptionHelpFormatter,
+    add_help=False)
 parser.add_argument('--structure', type=str, default='Structure/Structure.json',
-                    help='Provide Structure file location, Default Structure.json')
+                    help='JSON file location which holds files and directory information. Default value is '
+                         'Structure/Structure.json')
+parser.add_argument('--root', type=str, default='interpreter',
+                    help='Decide the root directory. Default value is interpreter')
 parser.add_argument('path', nargs='?', type=str, default='',
-                    help='Provide file or directory name or relative path')
+                    help='Handle paths to navigate the directory structure, also supports relative paths')
 parser.add_argument('-A', action='store_true',
-                    help='Provide -A to get all the files and directories including files starting with "."')
+                    help='Show all the files and directories including files starting with "."')
 parser.add_argument('-l', action='store_true',
-                    help='Provide -l to get all the files and directories information like permission, '
-                         'file or directory size, date, name vertically.')
-parser.add_argument('-r', action='store_true', help='Provide -r to get the files and directories in reverse order.')
-parser.add_argument('-t', action='store_true',
-                    help='Provide -t to get the files and directories in sorted order based on time (oldest first).')
+                    help='Show the files and directories information like permission, size, date, name vertically.')
+parser.add_argument('-r', action='store_true', help='Reverse the order of files and directories.')
+parser.add_argument('-t', action='store_true', help='Sort files and directories based on time (oldest first).')
 parser.add_argument('--filter', type=str, default='',
-                    help='Provide --filter to filter out files or directories, available options are file and dir.')
-parser.add_argument('-h', action='store_true', help='Provide -h to get human readable size of files and directories.')
+                    help='Filter out files or directories. Available options are 1. file 2. dir.')
+parser.add_argument('-h', action='store_true', help='Convert size of file or directories into human-readable size.')
+parser.add_argument('--help', action='help', default=argparse.SUPPRESS, help='Show help message and exit')
 args = parser.parse_args()  # Creating the argument object to parse argument
 
 # Parsing Arguments and Defined Variables
 structure_path = args.structure
+root_directory = args.root
 path = args.path
 all_file_flag = args.A
 list_info_flag = args.l
@@ -170,11 +194,11 @@ structure = json.load(file_object)
 file_object.close()
 
 if path:
-    for updated_structure in handle_directory_path(structure, re.sub('^\\./', 'interpreter/', path).split('/'),
+    for updated_structure in handle_directory_path(structure, re.sub('^\\./', f'{root_directory}/', path).split('/'),
                                                    ['.'] if '/' in path else []):
         structure = updated_structure
 else:
-    for updated_structure in handle_directory_path(structure, 'interpreter'.split('/')):
+    for updated_structure in handle_directory_path(structure, root_directory.split('/')):
         structure = updated_structure
 
 if not is_path_found:
