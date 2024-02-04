@@ -30,3 +30,6 @@
    |      `pyls -l parser`       | ![pyls_-l_directory_name](images/pyls_-l_directory_name.png "pyls_-l_directory_name") |
    | `pyls -l parser/parser.go`  |  ![pyls_-l_relative_path](images/pyls_-l_relative_path.png "pyls_-l_relative_path")   |
    | `pyls -l non_existent_path` | ![pyls_-l_incorrect_path](images/pyls_-l_incorrect_path.png "pyls_-l_incorrect_path") |
+8. **`pyls -l -h`**: This converted size of the file or directory to human-readable size. Example:
+
+   ![pyls -l -h](images/pyls_-l_-h.png "pyls -l -h")
