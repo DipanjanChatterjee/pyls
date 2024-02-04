@@ -1,18 +1,15 @@
 import re
+import sys
 import json
 import argparse
+from typing import Union
 from datetime import datetime
 
 
 class UnixCommand:
 
-    def __init__(self, structure_dict: dict):
-        self.structure = structure_dict
-
-    # Parse Directory
-    def directory_parser(self, name: str):
-        if self.structure.get('name') == name:
-            self.structure = self.structure.get('contents')
+    def __init__(self, structure_list: list):
+        self.structure = structure_list
 
     # Output Generated Commands
     # ls - lists out the top level directories and files, and it ignores those files which starts with '.'
@@ -37,11 +34,12 @@ class UnixCommand:
             return '\n'.join([
                 f'{items.get("permissions")} {items.get("size")} '
                 f'{datetime.fromtimestamp(items.get("time_modified")).strftime("%b %d %H:%M")} {items.get("name")}'
-                for items in self.structure if not items.get('name').startswith('.')])
+                for items in self.structure if len(re.findall('^\\.\\w+', items.get('name'))) <= 0])
         elif not l_flag and a_flag:  # pyls -A
             return ' '.join([items.get('name') for items in self.structure])
         else:  # pyls
-            return ' '.join([items.get('name') for items in self.structure if not items.get('name').startswith('.')])
+            return ' '.join(
+                [items.get('name') for items in self.structure if len(re.findall('^\\.\\w+', items.get('name'))) <= 0])
 
     # Transformation Commands
 
@@ -80,6 +78,47 @@ class UnixCommand:
             raise Exception(f"'{filter_name}' is not a valid filter criteria. Available filters are 'dir' and 'file'")
 
 
+# <path> - Search path item in directory info and find all subdirectories, files.
+def handle_directory_path(directory_info: Union[dict, list], path_list: list, route_list=None) -> list:
+    """
+    A generator recursive function that searches the provided path through directory info. If found, then yield all
+    corresponding subdirectories, files or path of the file.
+    :param route_list: None type, Optional; if the relative path is provided, then traversal route gets created in this
+    list.
+    :param directory_info: Dictionary or List type; this holds all the details of the directories, subdirectories and
+    files.
+    :param path_list: List type; this holds all fragments of path as elements.
+    :return: If found, then all information with subdirectories and files or about the files only.
+    """
+
+    global is_path_found
+
+    if route_list is None:
+        route_list: list = []
+    path_fragment: str = path_list[0]
+    if isinstance(directory_info, dict):
+        if directory_info.get('name') == path_fragment:
+            route_list += [directory_info.get('name')] if len(route_list) > 0 else []
+            path_list: list = path_list[1:]
+            if len(path_list) > 0:
+                directory_info: Union[dict, list] = directory_info.get('contents')
+                for result in handle_directory_path(directory_info, path_list, route_list):
+                    yield result
+            else:
+                if len(route_list) > 0:
+                    directory_info['name'] = '/'.join(route_list)
+                is_path_found = True
+                yield directory_info.get('contents') or [directory_info]
+        else:
+            directory_info: Union[dict, list] = directory_info.get('contents')
+            for result in handle_directory_path(directory_info, path_list, route_list):
+                yield result
+    elif isinstance(directory_info, list):
+        for item in directory_info:
+            for result in handle_directory_path(item, path_list, route_list):
+                yield result
+
+
 # Argument Parser Inputs
 parser = argparse.ArgumentParser(description='Unix Command Executor For Directory Parser')
 parser.add_argument('--structure', type=str, default='Structure/Structure.json',
@@ -106,28 +145,35 @@ list_info_flag = args.l
 reverse_flag = args.r
 time_sorting_flag = args.t
 filter_type = args.filter
-error_flag = False
+is_path_found = False
 
 # Reading Structures
 file_object = open(structure_path, 'r')
 structure = json.load(file_object)
 file_object.close()
 
+if path:
+    for updated_structure in handle_directory_path(structure, re.sub('^\\./', 'interpreter/', path).split('/'),
+                                                   ['.'] if '/' in path else []):
+        structure = updated_structure
+else:
+    for updated_structure in handle_directory_path(structure, 'interpreter'.split('/')):
+        structure = updated_structure
+
+if not is_path_found:
+    print(f"error: can not access '{path}': No such file or directory")
+    sys.exit()
+
 command_object = UnixCommand(structure)  # Creating Unix Command Objects
 
-if path:
-    print()
-else:
-    command_object.directory_parser('interpreter')
 if filter_type:
     try:
         command_object.command_filter(filter_name=filter_type)
     except Exception as error_message:
-        error_flag = True
-        print(', '.join(error_message.args))
+        print(f"error: {', '.join(error_message.args)}")
+        sys.exit()
 if time_sorting_flag:
     command_object.command_t()
 if reverse_flag:
     command_object.command_r()
-if not error_flag:
-    print(command_object.output_generated_command(all_file_flag, list_info_flag))
+print(command_object.output_generated_command(all_file_flag, list_info_flag))
