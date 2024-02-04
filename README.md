@@ -23,3 +23,10 @@
    |  `pyls -l --filter=dir`   |     ![pyls -l --filter=dir](images/pyls_-l_-filter=dir.png "pyls -l --filter=dir")      |
    |  `pyls -l --filter=file`  |    ![pyls -l --filter=file](images/pyls_-l_-filter=file.png "pyls -l --filter=file")    |
    | `pyls -l --filter=folder` | ![pyls -l --filter=folder](images/pyls_-l_-filter=folder.png "pyls -l --filter=folder") |
+7. **`pyls -l <path>`**: This searched through the directories shows all the subdirectories, files. It can also handle relative paths, but if the path is unknown, then an error will be shown. Example:
+
+   |           Command           |                                        Images                                         |
+   |:---------------------------:|:-------------------------------------------------------------------------------------:|
+   |      `pyls -l parser`       | ![pyls_-l_directory_name](images/pyls_-l_directory_name.png "pyls_-l_directory_name") |
+   | `pyls -l parser/parser.go`  |  ![pyls_-l_relative_path](images/pyls_-l_relative_path.png "pyls_-l_relative_path")   |
+   | `pyls -l non_existent_path` | ![pyls_-l_incorrect_path](images/pyls_-l_incorrect_path.png "pyls_-l_incorrect_path") |
