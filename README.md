@@ -18,8 +18,8 @@
    ![pyls -l -t](images/pyls_-l_-t.png "pyls -l -t")
 6. **`pyls -l --filter=<option>`**: This filtered out file or directories based on provided options(file, dir). `pyls -l --filter=file` filtered out only file, `pyls -l --filter=dir` filtered out only dir, but an error message will be displayed if neither _file_ nor _dir_ is specified. Example:
    
-   |         Command         |                                         Images                                          |
-   |:-----------------------:|:---------------------------------------------------------------------------------------:|
+   |          Command          |                                         Images                                          |
+   |:-------------------------:|:---------------------------------------------------------------------------------------:|
    |  `pyls -l --filter=dir`   |     ![pyls -l --filter=dir](images/pyls_-l_-filter=dir.png "pyls -l --filter=dir")      |
    |  `pyls -l --filter=file`  |    ![pyls -l --filter=file](images/pyls_-l_-filter=file.png "pyls -l --filter=file")    |
    | `pyls -l --filter=folder` | ![pyls -l --filter=folder](images/pyls_-l_-filter=folder.png "pyls -l --filter=folder") |
