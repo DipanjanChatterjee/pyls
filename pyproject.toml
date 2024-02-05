@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyls"
+version = "1.0"
+authors = [
+    {name = "Dipanjan Chatterjee", email = "dipchatterjee4040@gmail.com"},
+]
+description = "Unix Command Executor for Directory"
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = ["ls", "unix", "ls -A", "ls -l -r", "ls -l -t", "ls -l -h", "linux", "ubuntu", "red hat", "rhel"]
+license = {text = "BSD-3-Clause"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+dependencies = []
+#dynamic = ["1.0"]
+
+[project.urls]
+homepage = "https://github.com/DipanjanChatterjee/ZURU-Assignment"
+
+[project.scripts]
+pyls = "pyls.pyls:execute"
+
+#[tool.setuptools]
+#packages = ["pyls"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["pyls*"]
+exclude = ["images*"]
+namespaces = false
+
+[tool.setuptools.package-data]
+pyls = ["Structure/Structure.json"]
