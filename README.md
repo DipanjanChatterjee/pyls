@@ -1,6 +1,16 @@
-# ZURU-Assignment
+# pyls
 
-### **Commands:**
+Retrieve and display the top-level directories and files from a JSON file, excluding those whose names start with ".". This tool also supports the execution of various commands, including Unix commands such as ls, ls -A, ls -l, and more, along with some custom commands. Explore the extensive range of functionalities by referring to the **[Commands](#commands)** section below.
+
+## **Installation**
+Download the wheel file from the **dist** directory and use the following command:
+
+`pip install pyls-1.0-py3-none-any.whl`
+
+## **Usage**
+Type pyls in the command prompt and start executing commands. Below are the supported commands with examples.  
+
+## **Commands:**
 1. **`pyls`**: This lists out the top level (in the directory interpreter) directories and files, and it ignores the file which starts with '.'. Example:
 
     ![pyls](images/pyls.png "pyls")
