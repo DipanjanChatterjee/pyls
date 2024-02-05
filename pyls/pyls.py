@@ -135,51 +135,52 @@ def handle_directory_path(directory_info: Union[dict, list], path_list: list, ro
                 yield result
 
 
+# Argument Parser Inputs
+parser = argparse.ArgumentParser(
+    prog='PYLS',
+    usage='%(prog)s retrieve and display the top-level directories and files from a JSON file, excluding those whose'
+          ' names start with "."',
+    description='This is equipped to execute a variety of commands, including Unix commands such as ls, '
+                'ls -A, ls -l, and more alongside some custom commands.\nExplore the extensive range of functionalities'
+                ' by referring to the provided arguments.',
+    epilog='''Example:
+    python pyls.py | pyls 
+    python pyls.py --structure=Structure/Structure.json  | pyls --structure=Structure/Structure.json
+    python pyls.py --root=interpreter | pyls --root=interpreter
+    python pyls.py  parser | pyls parser
+    python pyls.py  -A | pyls -A
+    python pyls.py  -l | pyls -l
+    python pyls.py  -l -r | pyls -l -r
+    python pyls.py  -l -t | pyls -l -t
+python pyls.py  -l --filter=file | python pyls.py  -l --filter=dir | pyls -l --filter=file | pyls -l --filter=dir
+    python pyls.py  -l -h | pyls -l -h
+    python pyls.py  --help | pyls --help
+    ''',
+    formatter_class=argparse.RawDescriptionHelpFormatter,
+    add_help=False)
+parser.add_argument('--structure', type=str, default='Structure/Structure.json',
+                    help='JSON file location which holds files and directory information. Default value is '
+                         'Structure/Structure.json')
+parser.add_argument('--root', type=str, default='interpreter',
+                    help='Decide the root directory. Default value is interpreter')
+parser.add_argument('path', nargs='?', type=str, default='',
+                    help='Handle paths to navigate the directory structure, also supports relative paths')
+parser.add_argument('-A', action='store_true',
+                    help='Show all the files and directories including files starting with "."')
+parser.add_argument('-l', action='store_true',
+                    help='Show the files and directories information like permission, size, date, name vertically.')
+parser.add_argument('-r', action='store_true', help='Reverse the order of files and directories.')
+parser.add_argument('-t', action='store_true', help='Sort files and directories based on time (oldest first).')
+parser.add_argument('--filter', type=str, default='',
+                    help='Filter out files or directories. Available options are 1. file 2. dir.')
+parser.add_argument('-h', action='store_true', help='Convert size of file or directories into human-readable size.')
+parser.add_argument('--help', action='help', default=argparse.SUPPRESS, help='Show help message and exit')
+
 is_path_found = False
 
 
-def execute():
-    # Argument Parser Inputs
-    parser = argparse.ArgumentParser(
-        prog='PYLS',
-        usage='%(prog)s retrieve and display the top-level directories and files from a JSON file, excluding those '
-              'whose names start with "."',
-        description='This is equipped to execute a variety of commands, including Unix commands such as ls, '
-                    'ls -A, ls -l, and more alongside some custom commands.\nExplore the extensive range of '
-                    'functionalities by referring to the provided arguments.',
-        epilog='''Example:
-        python pyls.py | pyls 
-        python pyls.py --structure=Structure/Structure.json  | pyls --structure=Structure/Structure.json
-        python pyls.py --root=interpreter | pyls --root=interpreter
-        python pyls.py  parser | pyls parser
-        python pyls.py  -A | pyls -A
-        python pyls.py  -l | pyls -l
-        python pyls.py  -l -r | pyls -l -r
-        python pyls.py  -l -t | pyls -l -t
-    python pyls.py  -l --filter=file | python pyls.py  -l --filter=dir | pyls -l --filter=file | pyls -l --filter=dir
-        python pyls.py  -l -h | pyls -l -h
-        python pyls.py  --help | pyls --help
-        ''',
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        add_help=False)
-    parser.add_argument('--structure', type=str, default='Structure/Structure.json',
-                        help='JSON file location which holds files and directory information. Default value is '
-                             'Structure/Structure.json')
-    parser.add_argument('--root', type=str, default='interpreter',
-                        help='Decide the root directory. Default value is interpreter')
-    parser.add_argument('path', nargs='?', type=str, default='',
-                        help='Handle paths to navigate the directory structure, also supports relative paths')
-    parser.add_argument('-A', action='store_true',
-                        help='Show all the files and directories including files starting with "."')
-    parser.add_argument('-l', action='store_true',
-                        help='Show the files and directories information like permission, size, date, name vertically.')
-    parser.add_argument('-r', action='store_true', help='Reverse the order of files and directories.')
-    parser.add_argument('-t', action='store_true', help='Sort files and directories based on time (oldest first).')
-    parser.add_argument('--filter', type=str, default='',
-                        help='Filter out files or directories. Available options are 1. file 2. dir.')
-    parser.add_argument('-h', action='store_true', help='Convert size of file or directories into human-readable size.')
-    parser.add_argument('--help', action='help', default=argparse.SUPPRESS, help='Show help message and exit')
-    args = parser.parse_args()  # Creating the argument object to parse argument
+def execute(arguments=None):
+    args = parser.parse_args(arguments)  # Creating the argument object to parse argument
 
     # Parsing Arguments and Defined Variables
     structure_path = args.structure
