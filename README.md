@@ -47,3 +47,6 @@ Type pyls in the command prompt and start executing commands. Below are the supp
 
    ![pyls --help](images/pyls_-help1.png "pyls --help")
    ![pyls --help](images/pyls_-help2.png "pyls --help")
+
+## **Testcases**
+Testcases are provided in the [Testcases](testcases) directory. The tests are conducted using the pytest module. To install the pytest module, use the following command `pip install pytest`. Please reference the file [Structure.json](pyls/Structure/Structure.json) where all the directory structure has been mentioned, which is used for taking examples and executing the script to build the test cases.
